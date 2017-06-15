@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Row, Col } from 'react-flexbox-grid';
 import Paper from 'material-ui/Paper';
 import { CardTitle } from 'material-ui/Card';
+import LoadingSpinner from './LoadingSpinner';
 import { getResultsInfo } from '../actions';
 import ResultsListEntry from './ResultsListEntry';
 
@@ -10,7 +11,6 @@ const styles = {
   paper: { margin: 10 },
   title: { textAlign: 'center' },
 };
-
 
 class Results extends React.Component {
   constructor(props) {
@@ -24,10 +24,25 @@ class Results extends React.Component {
   }
 
   render() {
-    const { results } = this.props;
+    const { results, isFetchingResults } = this.props;
     const result = results[0];
 
-    if (!result) {
+    if (isFetchingResults) {
+      return (
+        <div>
+          <div className="bump-tab-bar" />
+          <Row>
+            <Col xs={12} sm={6} smOffset={3}>
+              <Paper style={styles.paper} zDepth={1}>
+                <div style={styles.title}>
+                  <LoadingSpinner />
+                </div>
+              </Paper>
+            </Col>
+          </Row>
+        </div>
+      );
+    } else if (!result) {
       return (
         <div>
           <div className="bump-tab-bar" />
@@ -57,6 +72,7 @@ class Results extends React.Component {
 const mapStateToProps = state => ({
   userId: state.auth.userId,
   results: state.results.results,
+  isFetchingResults: state.results.isFetchingResults,
 });
 
 export default connect(mapStateToProps)(Results);

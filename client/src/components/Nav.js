@@ -3,8 +3,8 @@ import { NavLink, Link } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import Popover from 'material-ui/Popover';
 import MenuItem from 'material-ui/MenuItem';
-import FlatButton from 'material-ui/FlatButton';
 import { Tabs, Tab } from 'material-ui/Tabs';
+import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { connect } from 'react-redux';
@@ -156,6 +156,8 @@ class Nav extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({ isAuthenticated: state.auth.isAuthenticated });
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
 
 export default connect(mapStateToProps)(Nav);

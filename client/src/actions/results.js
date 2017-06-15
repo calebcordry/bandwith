@@ -10,18 +10,18 @@ export const RESULTS_SET_CURRENT = 'RESULTS_SET_CURRENT';
 
 export const requestResultsInfo = () => ({
   type: RESULTS_INFO_REQUEST,
-  isFetching: true,
+  isFetchingResults: true,
 });
 
 export const receiveResultsInfo = results => ({
   type: RESULTS_INFO_SUCCESS,
-  isFetching: false,
+  isFetchingResults: false,
   results,
 });
 
 export const resultsInfoError = message => ({
   type: RESULTS_INFO_FAILURE,
-  isFetching: false,
+  isFetchingResults: false,
   message,
 });
 
@@ -52,17 +52,17 @@ export const getResultsInfo = userId => (dispatch) => {
 
 export const requestResultsAction = () => ({
   type: RESULTS_ACTION_REQUEST,
-  isFetching: true,
+  isFetchingResults: true,
 });
 
 export const resultsActionSuccess = () => ({
   type: RESULTS_ACTION_SUCCESS,
-  isFetching: false,
+  isFetchingResults: false,
 });
 
 export const resultsActionFailure = message => ({
   type: RESULTS_ACTION_FAILURE,
-  isFetching: false,
+  isFetchingResults: false,
   message,
 });
 
