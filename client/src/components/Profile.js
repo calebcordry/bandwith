@@ -2,32 +2,67 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import FlatButton from 'material-ui/FlatButton';
-import { Card,
+import {
+  Card,
   CardHeader,
   CardTitle,
   CardMedia,
+  CardText,
 } from 'material-ui/Card';
 import { List, ListItem } from 'material-ui/List';
 import Paper from 'material-ui/Paper';
 import Chip from 'material-ui/Chip';
 import { Row, Col } from 'react-flexbox-grid';
 import FullscreenDialog from 'material-ui-fullscreen-dialog';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
+import IconButton from 'material-ui/IconButton';
 import LoadingSpinner from './LoadingSpinner';
 import Signup from './Signup';
 
-const style = {
-  marginTop: 8,
-  marginBottom: 8,
-};
-const chipStyle = {
-  marginTop: 5,
-  marginLeft: 5,
-  display: 'inline-block',
-};
 const styles = {
-  paper: { margin: 10 },
-  title: { textAlign: 'center' },
+  pageContainer: {
+    // left and right margins
+    // top and bottom padding if necesarry around multiple cards
+    paddingTop: 0,
+    paddingLeft: 12,
+    paddingRight: 12,
+  },
+  bottomRow: { marginBottom: 12 },
+  cardContainer: {
+    // spacing between cards on a page
+    marginTop: 12,
+    marginBottom: 12,
+  },
+  empty: {
+    marginTop: 0,
+    marginBottom: 0,
+  },
+  loadingSpinner: {
+    textAlign: 'center',
+    width: '100%',
+  },
+  chip: {
+    marginTop: 5,
+    marginLeft: 5,
+    display: 'inline-block',
+  },
+  columnLeft: { paddingRight: 5 },
+  columnRight: { paddingLeft: 5 },
+  rowFixTop: { marginTop: 0 },
+  rowFixBottom: { marginBottom: 0 },
+  listItem: {
+    paddingRight: 12,
+    paddingLeft: 12,
+  },
+  generalInfo: {
+    height: 30,
+    display: 'inline-flex',
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  generalInfoIcon: {
+    marginTop: -2,
+    marginRight: 5,
+  },
 };
 
 class Profile extends React.Component {
@@ -39,6 +74,7 @@ class Profile extends React.Component {
       soundCloudIsLoading: false,
     };
     this.checkFormRedirect = this.checkFormRedirect.bind(this);
+    this.hideEditProfileDialog = this.hideEditProfileDialog.bind(this);
   }
 
   componentWillMount() {
@@ -60,6 +96,10 @@ class Profile extends React.Component {
     }
   }
 
+  hideEditProfileDialog() {
+    this.setState({ showEditProfile: false });
+  }
+
   render() {
     const {
       first,
@@ -67,7 +107,6 @@ class Profile extends React.Component {
       bio,
       age,
       gender,
-      email,
       search_radius,
       instruments,
       genres,
@@ -79,13 +118,13 @@ class Profile extends React.Component {
       photo_src_small,
     } = this.props.user;
 
-    const { hasUserInfo } = this.props;
+    const { hasUserInfo, isSavingUser, isFetchingUser } = this.props;
     const { location } = this.props.location;
     const fullname = `${first} ${last}`;
     const search = `Searching within ${search_radius} miles`;
     const profile = `${gender}, ${age}`;
 
-    if (hasUserInfo) {
+    if (hasUserInfo && !isSavingUser && !isFetchingUser) {
       let videoId = '';
       if (video_url) {
         const videoUrl = video_url.split('/');
@@ -97,23 +136,19 @@ class Profile extends React.Component {
       const song_id = song_url && song_url.match(re);
 
       return (
-        <div>
+        <div style={styles.pageContainer}>
           <div className="bump-tab-bar" />
           <Row>
-            <Col xs={12} sm={8} xsOffset={0} smOffset={2}>
-              <Paper style={style}>
+            <Col xs={12} sm={8} smOffset={2}>
+              <Paper style={styles.cardContainer}>
                 <Card className="chat-title">
                   <div className="edit-div">
-                    <FloatingActionButton
-                      zDepth={1}
+                    <IconButton
                       className="edit-button"
                       onClick={() => this.setState({ showEditProfile: true })}
-                      mini
-                      backgroundColor="white"
-                      iconStyle={{ color: 'black' }}
                     >
                       <i className="material-icons">create</i>
-                    </FloatingActionButton>
+                    </IconButton>
                   </div>
                   <img
                     className="chat-picture"
@@ -124,101 +159,87 @@ class Profile extends React.Component {
                     src={photo_src_small || '/assets/avatar.jpg'}
                   />
                   <CardTitle title={fullname} subtitle={bio} />
+                  <CardText>
+                    <span style={styles.generalInfo}>
+                      <i className="material-icons" style={styles.generalInfoIcon}>
+                        account_circle
+                      </i>
+                      {profile}
+                    </span>
+                    <span style={styles.generalInfo}>
+                      <i className="material-icons" style={styles.generalInfoIcon}>
+                        place
+                      </i>
+                      {location}
+                    </span>
+                  </CardText>
                 </Card>
               </Paper>
             </Col>
           </Row>
-          <Row>
-            <Col xs={12} sm={4} smOffset={2}>
-              <Paper style={style}>
+          { song_id ?
+            <Row>
+              <Col xs={12} sm={8} smOffset={2}>
+                <Paper
+                  style={Object.assign(
+                    {},
+                    styles.cardContainer,
+                    styles.rowFixTop,
+                    styles.rowFixBottom,
+                  )}
+                >
+                  <Card>
+                    <CardMedia>
+                      <iframe
+                        scrolling="no"
+                        frameBorder="no"
+                        title="audio"
+                        src={`https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${song_id}`}
+                      />
+                    </CardMedia>
+                  </Card>
+                </Paper>
+              </Col>
+            </Row>
+            : null
+          }
+          <Row style={styles.bottomRow}>
+            <Col xs={12} sm={4} smOffset={2} style={styles.columnLeft}>
+              <Paper style={song_id ?
+                Object.assign({}, styles.cardContainer, styles.rowFixBottom) :
+                Object.assign({}, styles.empty, styles.rowFixBottom)}
+              >
                 <Card>
-                  <CardTitle title="Personal Info" />
+                  <CardTitle title="Talents &amp; Influences" />
                   <List>
                     <ListItem
+                      autoGenerateNestedIndicator={false}
+                      initiallyOpen
                       disabled
-                      leftIcon={<i className="material-icons">account_circle</i>}
-                      primaryText={profile}
-                    />
-                    <ListItem
-                      disabled
-                      leftIcon={<i className="material-icons">email</i>}
-                      primaryText={email}
-                    />
-                    <ListItem
-                      disabled
-                      leftIcon={<i className="material-icons">place</i>}
-                      primaryText={location}
-                    />
-                  </List>
-                </Card>
-              </Paper>
-            </Col>
-            <Col xs={12} sm={4}>
-              <Paper style={style}>
-                <Card>
-                  <CardTitle title="Checkout my skills..." />
-                  <List>
-                    <ListItem
-                      leftIcon={<i className="material-icons">music_video</i>}
-                      primaryText="YouTube"
-                      primaryTogglesNestedList
-                      nestedItems={[
-                        <CardMedia key={videoId}>
-                          <iframe
-                            frameBorder="0"
-                            allowFullScreen
-                            title="video"
-                            src={`https://www.youtube.com/embed/${videoId}`}
-                          />
-                        </CardMedia>,
-                      ]}
-                    />
-                    <ListItem
-                      leftIcon={<i className="material-icons">audiotrack</i>}
-                      primaryText="SoundCloud"
-                      primaryTogglesNestedList
-                      nestedItems={[
-                        <CardMedia key={song_id}>
-                          <iframe
-                            scrolling="no"
-                            frameBorder="no"
-                            title="audio"
-                            src={`https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${song_id}`}
-                          />
-                        </CardMedia>,
-                      ]}
-                    />
-                  </List>
-                </Card>
-              </Paper>
-            </Col>
-          </Row>
-          <Row>
-            <Col xs={12} sm={4} smOffset={2}>
-              <Paper style={style}>
-                <Card>
-                  <CardTitle title="Me as a Musician" />
-                  <List>
-                    <ListItem
                       leftIcon={<i className="material-icons">speaker</i>}
                       primaryText="My Instruments"
-                      primaryTogglesNestedList
+                      nestedListStyle={styles.listItem}
                       nestedItems={instruments.map(instrument =>
-                        <Chip key={instrument} style={chipStyle}>{instrument}</Chip> // eslint-disable-line
+                        <Chip key={instrument} style={styles.chip}>{instrument}</Chip> // eslint-disable-line
                       )}
                     />
                     <ListItem
+                      autoGenerateNestedIndicator={false}
+                      initiallyOpen
+                      disabled
                       leftIcon={<i className="material-icons">album</i>}
                       primaryText="My Genres"
-                      primaryTogglesNestedList
+                      nestedListStyle={styles.listItem}
                       nestedItems={genres.map(genre =>
-                        <Chip key={genre} style={chipStyle}>{genre}</Chip> // eslint-disable-line
+                        <Chip key={genre} style={styles.chip}>{genre}</Chip> // eslint-disable-line
                       )}
                     />
                     <ListItem
+                      autoGenerateNestedIndicator={false}
+                      initiallyOpen
+                      disabled
                       leftIcon={<i className="material-icons">headset</i>}
                       primaryText="My Influences"
-                      primaryTogglesNestedList
                       nestedItems={influences.map(influence => (
                         <Card key={influence.name}>
                           <CardHeader title={influence.name} avatar={influence.img} />
@@ -229,29 +250,53 @@ class Profile extends React.Component {
                 </Card>
               </Paper>
             </Col>
-            <Col xs={12} sm={4}>
-              <Paper style={style}>
+            <Col xs={12} sm={4} style={styles.columnRight}>
+              { videoId ?
+                <Paper style={Object.assign({}, styles.cardContainer, styles.rowFixBottom)}>
+                  <Card>
+                    <CardMedia key={videoId}>
+                      <div className="aspect-ratio">
+                        <iframe
+                          frameBorder="0"
+                          allowFullScreen
+                          title="video"
+                          src={`https://www.youtube.com/embed/${videoId}`}
+                        />
+                      </div>
+                    </CardMedia>
+                  </Card>
+                </Paper>
+                : null
+              }
+              <Paper style={videoId ? styles.cardContainer : styles.empty}>
                 <Card>
-                  <CardTitle title="I am looking for Musicians..." />
+                  <CardTitle title="Musical Preferences" />
                   <List>
                     <ListItem
+                      disabled
                       leftIcon={<i className="material-icons">near_me</i>}
                       primaryText={search}
                     />
                     <ListItem
+                      autoGenerateNestedIndicator={false}
+                      initiallyOpen
+                      disabled
                       leftIcon={<i className="material-icons">grade</i>}
                       primaryText="Preferred Instruments"
-                      primaryTogglesNestedList
+                      nestedListStyle={styles.listItem}
                       nestedItems={preferred_instruments.map(instrument =>
-                        <Chip key={instrument} style={chipStyle}>{instrument}</Chip> // eslint-disable-line
+                        <Chip key={instrument} style={styles.chip}>{instrument}</Chip> // eslint-disable-line
                       )}
                     />
                     <ListItem
+                      autoGenerateNestedIndicator={false}
+                      initiallyOpen
+                      disabled
                       leftIcon={<i className="material-icons">favorite</i>}
                       primaryText="Preferred Genres"
-                      primaryTogglesNestedList
+                      nestedListStyle={styles.listItem}
                       nestedItems={preferred_genres.map(genre =>
-                        <Chip key={genre} style={chipStyle}>{genre}</Chip> // eslint-disable-line
+                        <Chip key={genre} style={styles.chip}>{genre}</Chip> // eslint-disable-line
                       )}
                     />
                   </List>
@@ -270,21 +315,20 @@ class Profile extends React.Component {
             />}
             appBarStyle={{ backgroundColor: '#000000' }}
           >
-            <Signup />
+            <Signup hideEditProfileDialog={this.hideEditProfileDialog} />
           </FullscreenDialog>
         </div>
       );
     }
     return (
-      <div>
+      <div style={styles.pageContainer}>
+        <div className="bump-tab-bar" />
         <div className="bump-tab-bar" />
         <Row>
           <Col xs={12} sm={6} smOffset={3}>
-            <Paper style={styles.paper} zDepth={1}>
-              <div style={styles.title}>
-                <LoadingSpinner />
-              </div>
-            </Paper>
+            <div style={styles.loadingSpinner}>
+              <LoadingSpinner />
+            </div>
           </Col>
         </Row>
       </div>

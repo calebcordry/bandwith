@@ -11,9 +11,18 @@ import Divider from 'material-ui/Divider';
 import FlatButton from 'material-ui/FlatButton';
 
 const styles = {
-  paper: { margin: 10 },
-  profileContainer: { padding: 10 },
-  title: { textAlign: 'center' },
+  pageContainer: {
+    // left and right margins
+    // top and bottom padding if necesarry around multiple cards
+    paddingTop: '6px',
+    paddingLeft: '12px',
+    paddingRight: '12px',
+  },
+  cardContainer: {
+    // spacing between cards on a page
+    marginTop: '6px',
+    marginBottom: '6px',
+  },
   chatsProfileHeader: {
     position: 'absolute',
     top: 65,
@@ -21,14 +30,32 @@ const styles = {
     right: 0,
     zIndex: 1000,
   },
-  chatsContainer: {
+  chatsOuterContainer: {
     width: '100%',
     paddingBottom: '50px',
-    paddingTop: '275px',
+    paddingTop: '326px',
+    marginLeft: '-12px',
+    marginRight: '-12px',
   },
-  chatsListContainer: {
+  profileOuterContainer: {
+    marginTop: '-6px',
+    marginLeft: '-12px',
+    marginRight: '-12px',
+  },
+  chatsListOuterContainer: {
+    width: '100%',
     zIndex: '-1',
     position: 'absolute',
+  },
+  generalInfo: {
+    height: '30px',
+    display: 'inline-flex',
+    paddingLeft: '10px',
+    paddingRight: '10px',
+  },
+  generalInfoIcon: {
+    marginTop: '-2px',
+    marginRight: '5px',
   },
 };
 
@@ -56,47 +83,55 @@ class Chats extends React.Component {
       first,
       last,
       bio,
-      photo_src_small
+      photo_src_small,
+      gender,
+      age,
+      location
     } = currentMatch;
+
+    const profile = `${gender}, ${age}`;
 
     const chatOrProfile = () => {
       if(this.state.showChat){
         return (
-          <div style={styles.chatsContainer}>
+          <div style={styles.chatsOuterContainer}>
             <ChatsInput currentMatch={currentMatch} />
-            <ChatsList style={styles.chatsListContainer} currentMatch={currentMatch} />
+            <ChatsList style={styles.chatsListOuterContainer} currentMatch={currentMatch} />
           </div>
         );
       }else{
-        return (<div style={styles.profileContainer}><ResultsProfile currentMatch={currentMatch} /></div>)
+        return (<div style={styles.profileOuterContainer}><ResultsProfile currentMatch={currentMatch} /></div>)
       }
     }
 
     return (
-      <div>
-
-            <Paper style={styles.paper}>
-            <Card style={styles.chatsProfileHeader}>
-              <div className="chat-title">
-                <img className="chat-picture" width="100" height="100" alt="profile-pic" src={photo_src_small || '/assets/avatar.jpg'} />
-                <CardTitle
-                  title={`${first} ${last}`} subtitle={bio}
-                />
-                <Divider />
-              <CardActions>
-                <Row>
-                  <Col xs={6}>
-                    <FlatButton fullWidth={true} label="Chat" onClick={() => this.toggleChatAndProfile('chat')} />
-                  </Col>
-                  <Col xs={6}>
-                    <FlatButton fullWidth={true} label="Profile" onClick={() => this.toggleChatAndProfile('profile')} />
-                  </Col>
-                </Row>
-              </CardActions>
-              </div>
-            </Card>
-            </Paper>
-              {chatOrProfile()}
+      <div style={styles.pageContainer}>
+        <Paper style={styles.cardContainer}>
+          <Card style={styles.chatsProfileHeader}>
+            <div className="chat-title">
+              <img className="chat-picture" width="100" height="100" alt="profile-pic" src={photo_src_small || '/assets/avatar.jpg'} />
+              <CardTitle
+                title={`${first} ${last}`} subtitle={bio}
+              />
+              <CardText>
+                <span style={styles.generalInfo}><i className="material-icons" style={styles.generalInfoIcon}>account_circle</i>{profile}</span>
+                <span style={styles.generalInfo}><i className="material-icons" style={styles.generalInfoIcon}>place</i>{location}</span>
+              </CardText>
+              <Divider />
+            <CardActions>
+              <Row>
+                <Col xs={6}>
+                  <FlatButton secondary={this.state.showChat} fullWidth={true} label="Chat" onClick={() => this.toggleChatAndProfile('chat')} />
+                </Col>
+                <Col xs={6}>
+                  <FlatButton secondary={this.state.showProfile}  fullWidth={true} label="Profile" onClick={() => this.toggleChatAndProfile('profile')} />
+                </Col>
+              </Row>
+            </CardActions>
+            </div>
+          </Card>
+        </Paper>
+        {chatOrProfile()}
       </div>
     );
   }

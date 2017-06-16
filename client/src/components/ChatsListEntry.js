@@ -16,7 +16,7 @@ const styles = {
     padding: '10px',
     borderRadius: '2px',
     boxShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
-    maxWidth: '80%',
+    maxWidth: '70%',
   },
   chatEntryText: {
     fontSsize: '0.8rem',
@@ -109,7 +109,7 @@ class ChatListEntry extends React.Component {
           <li
             style={styles.theirMessage}
           >
-            <Avatar style={styles.chatEntryAvatar} src={this.props.user.photo_src_small || '/assets/avatar.jpg'} />
+            <Avatar style={styles.chatEntryAvatar} src={this.props.currentMatch.photo_src_small || '/assets/avatar.jpg'} />
             <div style={styles.arrowLeft} />
             <div style={styles.chatEntryMessageContainer}>
               <div style={styles.chatEntryText}>{this.props.chatMessage.message}</div>

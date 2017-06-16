@@ -39,8 +39,8 @@ class Home extends React.Component {
           <Row>
             <Card style={{ boxShadow: 'none' }}>
               <Row>
-                <Col xs={12} sm={6} className="fixed-column">
-                  <div className="vertical-center">
+                <Col xs={12} sm={6}>
+                  <div className="middle-panel">
                     <div className="center-text">
                       <span className="parallel-text">Build your profile</span>
                       <span className="parallel-text">&amp;</span>
@@ -49,8 +49,8 @@ class Home extends React.Component {
                     </div>
                   </div>
                 </Col>
-                <Col xs={12} sm={6} className="fixed-column">
-                  <CardMedia className="vertical-center">
+                <Col xs={12} sm={6}>
+                  <CardMedia className="middle-panel">
                     <img alt="splash-img" src="/assets/roman-kraft-57267.jpg" />
                   </CardMedia>
                 </Col>
@@ -109,8 +109,8 @@ class Home extends React.Component {
         <Row>
           <Card style={{ boxShadow: 'none' }}>
             <Row>
-              <Col xs={12} sm={6} className="fixed-column">
-                <div className="vertical-center">
+              <Col xs={12} sm={6}>
+                <div className="middle-panel">
                   <div className="center-text">
                     <span className="parallel-text">Build your profile</span>
                     <span className="parallel-text">&amp;</span>
@@ -119,8 +119,8 @@ class Home extends React.Component {
                   </div>
                 </div>
               </Col>
-              <Col xs={12} sm={6} className="fixed-column">
-                <CardMedia className="vertical-center">
+              <Col xs={12} sm={6}>
+                <CardMedia className="middle-panel">
                   <img alt="splash-img" src="/assets/roman-kraft-57267.jpg" />
                 </CardMedia>
               </Col>

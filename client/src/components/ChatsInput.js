@@ -2,21 +2,12 @@ import React from 'react';
 import io from 'socket.io-client';
 import { connect } from 'react-redux';
 import { Row, Col } from 'react-flexbox-grid';
-import { Card, CardText, CardActions } from 'material-ui/Card';
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
+import { Card } from 'material-ui/Card';
 import IconButton from 'material-ui/IconButton';
-import { List } from 'material-ui/List';
-import ChatsListEntry from './ChatsListEntry';
-import { getChats, addSentChat, addReceivedChat } from '../actions';
 import FontIcon from 'material-ui/FontIcon';
+import { addSentChat, addReceivedChat } from '../actions';
 
 const styles = {
-  button: {
-    position: 'relative',
-    top: '27px',
-    backgroundColor: '#000',
-  },
   chatInputBar: {
     position: 'absolute',
     bottom: '0px',
@@ -33,6 +24,11 @@ const styles = {
     outline: 'none',
     fontSize: '16px',
   },
+  chatInputButton: {
+    position: 'absolute',
+    top: 4,
+    right: -4,
+  },
 };
 
 class ChatsInput extends React.Component {
@@ -45,7 +41,8 @@ class ChatsInput extends React.Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    this.socket = io('http://localhost:3000');
+    const socketUrl = process.env.NODE_ENV === 'production' ? '/' : 'http://localhost:3000';
+    this.socket = io(socketUrl);
     this.socket.on('chat:received', (receivedChat) => {
       dispatch(addReceivedChat(receivedChat));
     });
@@ -92,6 +89,7 @@ class ChatsInput extends React.Component {
               <IconButton
                 label="Send"
                 onClick={this.handleSendClick}
+                style={styles.chatInputButton}
               >
                 <FontIcon className="material-icons">send_icon</FontIcon>
               </IconButton>

@@ -19,10 +19,20 @@ import FirstNameInput from './Signup/FirstNameInput';
 import InfluencesInput from './Signup/InfluencesInput';
 import SearchRadiusInput from './Signup/SearchRadiusInput';
 import BiographyTextArea from './Signup/BiographyTextArea';
+import SignupDialogBar from './Signup/SignupDialogBar';
 
-const style = {
-  marginTop: 8,
-  marginBottom: 8,
+const styles = {
+  pageContainer: {
+    // left and right margins
+    // top and bottom padding if necesarry around multiple cards
+    paddingLeft: '12px',
+    paddingRight: '12px',
+  },
+  cardContainer: {
+    // spacing between cards on a page
+    marginTop: '12px',
+    marginBottom: '12px',
+  },
 };
 
 const instruments = ['electric guitar', 'acoustic guitar', 'bass', 'drums', 'piano', 'vocals', 'ukulele', 'violin', 'saxophone', 'trumpet'];
@@ -72,10 +82,6 @@ class Signup extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.fillFormData(nextProps);
-  }
-
-  componentWillUnmount() {
-    this.send();
   }
 
   fillFormData(props) {
@@ -134,8 +140,8 @@ class Signup extends Component {
       preferred_instruments: [],
       preferred_genres: [],
     });
-
     dispatch(updateProfile(profile));
+    this.props.hideEditProfileDialog();
   }
 
   handlePhotoChange(urlLrg, urlSml) {
@@ -242,124 +248,125 @@ class Signup extends Component {
 
   render() {
     return (
-      <Row>
-        <Col xs={12} sm={6} smOffset={3}>
-          <Paper style={style}>
-            <Card>
-              <CardText>
-                <Row>
-                  <Col xs={12}>
-                    <ProfileImage
-                      handlePhotoChange={this.handlePhotoChange}
-                    />
-                  </Col>
-                  <Col xs={12} sm={6}>
-                    <FirstNameInput
-                      value={this.state.first}
-                      onChange={this.handleChange}
-                    />
-                  </Col>
-                  <Col xs={12} sm={6}>
-                    <LastNameInput value={this.state.last} onChange={this.handleChange} />
-                  </Col>
-                  <Col xs={12} sm={4}>
-                    <AgeInput
-                      value={this.state.age}
-                      onChange={this.handleNumberChange}
-                      ageErrorText={this.state.ageErrorText}
-                    />
-                  </Col>
-                  <Col xs={12} sm={4}>
-                    <GenderInput onChange={this.handleGender} value={this.state.gender} />
-                  </Col>
-                  <Col xs={12} sm={4}>
-                    <ZipCodeInput
-                      value={this.state.zipcode}
-                      onChange={this.handleNumberChange}
-                      zipErrorText={this.state.zipcodeErrorText}
-                    />
-                  </Col>
-                  <Col xs={12}>
-                    <BiographyTextArea
-                      bio={this.state.bio}
-                      onChange={this.handleChange}
-                    />
-                  </Col>
-                </Row>
-              </CardText>
-            </Card>
-          </Paper>
-          <Paper style={style}>
-            <Card>
-              <CardTitle title="Your sounds" />
-              <CardText>
-                <SongInput song={this.state.song_url} onChange={this.handleChange} /><br />
-                <VideoInput video={this.state.video_url} onChange={this.handleChange} />
-              </CardText>
-            </Card>
-          </Paper>
-          <Paper style={style}>
-            <Card>
-              <CardTitle title="Your inspirations" />
-              <CardText>
-                <InfluencesInput
-                  influence={this.state.influence}
-                  influences={this.state.influences}
-                  handleChange={this.handleChange}
-                  onClick={this.handleInfluences}
-                  handleChip={this.handleRemoveInfluence}
-                /><br />
-                <Divider />
-                <PopoverMenu
-                  style={style}
-                  itemName="instruments"
-                  className="instruments"
-                  listItems={instruments}
-                  handleChip={this.handleSelectMultiple}
-                  selectedItems={this.state.instruments}
-                /><br />
-                <Divider />
-                <PopoverMenu
-                  style={style}
-                  className="genres"
-                  itemName="genres"
-                  listItems={genres}
-                  handleChip={this.handleSelectMultiple}
-                  selectedItems={this.state.genres}
-                /><br />
-              </CardText>
-            </Card>
-          </Paper>
-          <Paper style={style}>
-            <Card>
-              <CardTitle title="Your discovery prefs" />
-              <CardText>
-                <SearchRadiusInput
-                  radius={this.state.search_radius}
-                  onChange={this.handleSearchRadius}
-                  radiusErrorText={this.state.search_radiusErrorText}
-                />
-                <Divider />
-                <PopoverMenu
-                  itemName="preferred_genres"
-                  className="preferred genre matches"
-                  listItems={genres}
-                  handleChip={this.handleSelectMultiple}
-                  selectedItems={this.state.preferred_genres}
-                /><br />
-                <Divider />
-                <PopoverMenu
-                  itemName="preferred_instruments"
-                  className="preferred instrument matches"
-                  listItems={instruments}
-                  handleChip={this.handleSelectMultiple}
-                  selectedItems={this.state.preferred_instruments}
-                />
-              </CardText>
-            </Card>
-          </Paper>
-        </Col>
-      </Row>
+      <Paper style={styles.pageContainer}>
+        <SignupDialogBar dialogTitle={`${this.state.first} ${this.state.last}`} onCloseClick={this.props.hideEditProfileDialog} onSaveClick={this.send} />
+        <Row>
+          <Col xs={12} sm={8} smOffset={2}>
+            <Paper style={styles.cardContainer}>
+              <Card>
+                <CardText>
+                  <Row>
+                    <Col xs={12}>
+                      <ProfileImage
+                        handlePhotoChange={this.handlePhotoChange}
+                      />
+                    </Col>
+                    <Col xs={12} sm={6}>
+                      <FirstNameInput
+                        value={this.state.first}
+                        onChange={this.handleChange}
+                      />
+                    </Col>
+                    <Col xs={12} sm={6}>
+                      <LastNameInput value={this.state.last} onChange={this.handleChange} />
+                    </Col>
+                    <Col xs={12} sm={4}>
+                      <AgeInput
+                        value={this.state.age}
+                        onChange={this.handleNumberChange}
+                        ageErrorText={this.state.ageErrorText}
+                      />
+                    </Col>
+                    <Col xs={12} sm={4}>
+                      <GenderInput onChange={this.handleGender} value={this.state.gender} />
+                    </Col>
+                    <Col xs={12} sm={4}>
+                      <ZipCodeInput
+                        value={this.state.zipcode}
+                        onChange={this.handleNumberChange}
+                        zipErrorText={this.state.zipcodeErrorText}
+                      />
+                    </Col>
+                    <Col xs={12}>
+                      <BiographyTextArea
+                        bio={this.state.bio}
+                        onChange={this.handleChange}
+                      />
+                    </Col>
+                  </Row>
+                </CardText>
+              </Card>
+            </Paper>
+            <Paper style={styles.cardContainer}>
+              <Card>
+                <CardTitle title="Your Sounds" />
+                <CardText>
+                  <SongInput song={this.state.song_url} onChange={this.handleChange} /><br />
+                  <VideoInput video={this.state.video_url} onChange={this.handleChange} />
+                </CardText>
+              </Card>
+            </Paper>
+            <Paper style={styles.cardContainer}>
+              <Card>
+                <CardTitle title="Your Inspirations &amp; Talents" />
+                <CardText>
+                  <InfluencesInput
+                    influence={this.state.influence}
+                    influences={this.state.influences}
+                    handleChange={this.handleChange}
+                    onClick={this.handleInfluences}
+                    handleChip={this.handleRemoveInfluence}
+                  /><br />
+                  <Divider />
+                  <PopoverMenu
+                    itemName="instruments"
+                    className="instruments"
+                    listItems={instruments}
+                    handleChip={this.handleSelectMultiple}
+                    selectedItems={this.state.instruments}
+                  /><br />
+                  <Divider />
+                  <PopoverMenu
+                    className="genres"
+                    itemName="genres"
+                    listItems={genres}
+                    handleChip={this.handleSelectMultiple}
+                    selectedItems={this.state.genres}
+                  /><br />
+                </CardText>
+              </Card>
+            </Paper>
+            <Paper style={styles.cardContainer}>
+              <Card>
+                <CardTitle title="Your Discovery Preferences" />
+                <CardText>
+                  <SearchRadiusInput
+                    radius={this.state.search_radius}
+                    onChange={this.handleSearchRadius}
+                    radiusErrorText={this.state.search_radiusErrorText}
+                  />
+                  <Divider />
+                  <PopoverMenu
+                    itemName="preferred_genres"
+                    className="preferred genre matches"
+                    listItems={genres}
+                    handleChip={this.handleSelectMultiple}
+                    selectedItems={this.state.preferred_genres}
+                  /><br />
+                  <Divider />
+                  <PopoverMenu
+                    itemName="preferred_instruments"
+                    className="preferred instrument matches"
+                    listItems={instruments}
+                    handleChip={this.handleSelectMultiple}
+                    selectedItems={this.state.preferred_instruments}
+                  />
+                </CardText>
+              </Card>
+            </Paper>
+          </Col>
+        </Row>
+      </Paper>
     );
   }
 }

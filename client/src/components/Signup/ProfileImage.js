@@ -21,6 +21,10 @@ const styles = {
     color: 'black',
     margin: '2px 0px 12px 0px',
   },
+  loadingSpinner: {
+    textAlign: 'center',
+    width: '100%',
+  },
 };
 const CLOUDINARY_UPLOAD_PRESET = 'bandwith';
 const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/hjwsarwnv/image/upload';
@@ -202,7 +206,7 @@ class ProfileImage extends React.Component {
           </Dropzone>
           <Cropper
             ref="cropper"
-            src={this.state.largeImage}
+            src={this.state.largeImage || '/assets/avatar.jpg'}
             style={{ height: '400px', width: '100%' }}
             aspectRatio={16 / 16}
             crop={this.imageCrop}
