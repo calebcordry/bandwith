@@ -1,12 +1,11 @@
 import React from 'react';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import Headset from 'material-ui/svg-icons/hardware/headset';
-import Note from 'material-ui/svg-icons/image/audiotrack';
 import { Card, CardMedia, CardText } from 'material-ui/Card';
 import { List, ListItem } from 'material-ui/List';
 import { Row, Col } from 'react-flexbox-grid';
 import { connect } from 'react-redux';
+import FontIcon from 'material-ui/FontIcon';
 
 const style = {
   button: {
@@ -89,15 +88,15 @@ class Home extends React.Component {
               <div>
                 <RaisedButton
                   style={style.button}
-                  label="Log in"
-                  icon={<Headset />}
+                  label="Login"
+                  icon={<FontIcon color={'black'} className="material-icons">play_arrow</FontIcon>}
                   labelPosition="before"
                   href={'/login'}
                 />
                 <RaisedButton
                   style={style.button}
                   label="Demo"
-                  icon={<Note />}
+                  icon={<FontIcon className="material-icons">remove_red_eye</FontIcon>}
                   labelPosition="before"
                   href={'/demo'}
                   secondary
